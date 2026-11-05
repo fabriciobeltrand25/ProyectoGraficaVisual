@@ -3,13 +3,16 @@ package com.autoscann.hn;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.CameraSelector;
+import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageAnalysis;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
@@ -21,7 +24,6 @@ import androidx.core.content.ContextCompat;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import com.google.mlkit.vision.common.InputImage;
-import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
@@ -112,6 +114,7 @@ public class LivePreviewActivity extends AppCompatActivity {
     // INICIAR CAMERAX
     // --------------------------------
 
+    @OptIn(markerClass = ExperimentalGetImage.class)
     private void iniciarCamara() {
 
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
@@ -171,6 +174,7 @@ public class LivePreviewActivity extends AppCompatActivity {
     // ANALIZAR FOTOGRAMAS OCR
     // --------------------------------
 
+    @ExperimentalGetImage
     private void analizarFotograma(ImageProxy imageProxy) {
 
         if (procesando) {
@@ -178,7 +182,7 @@ public class LivePreviewActivity extends AppCompatActivity {
             return;
         }
 
-        android.media.Image mediaImage = imageProxy.getImage();
+        Image mediaImage = imageProxy.getImage();
 
         if (mediaImage == null) {
             imageProxy.close();
@@ -199,13 +203,7 @@ public class LivePreviewActivity extends AppCompatActivity {
                     String texto = text.getText();
 
                     if (!texto.trim().isEmpty()) {
-
-                        runOnUiThread(() -> {
-
-                            txtReconocido.setText(
-                                    texto
-                            );
-                        });
+                        runOnUiThread(() -> txtReconocido.setText(texto));
                     }
 
                 })

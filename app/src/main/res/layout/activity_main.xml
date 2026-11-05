@@ -1,124 +1,291 @@
-
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F3F6FA"
-    android:fillViewport="true">
+    android:background="#F3F6FA">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="AutoScan Hn"
-            android:textColor="#12345A"
-            android:textSize="28sp"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Control inteligente de gastos vehiculares"
-            android:textColor="#718096"
-            android:textSize="14sp"
-            android:layout_marginBottom="25dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="LECTURA DE RECIBOS"
-            android:textColor="#12345A"
-            android:textStyle="bold"
-            android:textSize="14sp"
-            android:layout_marginBottom="12dp"/>
-
-        <Button
-            android:id="@+id/btnEscanear"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="Escanear Recibo (Cámara)"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:backgroundTint="#12345A"/>
-
-        <Button
-            android:id="@+id/btnGaleria"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="12dp"
-            android:text="Cargar de Galería"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:backgroundTint="#1976D2"/>
-
-        <Button
-            android:id="@+id/btnLivePreview"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="12dp"
-            android:text="Live Preview - Tiempo Real"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:backgroundTint="#16845B"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#DCE3EC"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="22dp"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="ÚLTIMO GASTO REGISTRADO"
-            android:textColor="#12345A"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"/>
+        android:layout_height="match_parent"
+        android:layout_marginBottom="?attr/actionBarSize"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:elevation="3dp">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/txtUltimoTotal"
+            <!-- ENCABEZADO -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="L. 0.00"
-                android:textColor="#16845B"
-                android:textSize="30sp"
-                android:textStyle="bold"/>
+                android:orientation="vertical"
+                android:background="@drawable/bg_header_curve"
+                android:paddingTop="30dp"
+                android:paddingBottom="40dp"
+                android:paddingHorizontal="20dp"
+                android:gravity="center_horizontal">
 
-            <TextView
-                android:id="@+id/txtUltimosLitros"
+                <ImageView
+                    android:id="@+id/ivLogo"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginBottom="10dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_launcher2" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="AutoScan Hn"
+                    android:textColor="#FFFFFF"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="¡Bienvenido a AutoScan Hn!\nTu gestor inteligente de gastos vehiculares"
+                    android:textColor="#E0E0E0"
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:layout_marginTop="5dp"/>
+            </LinearLayout>
+
+            <!-- CONTENIDO -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Combustible: -- litros"
-                android:textColor="#526174"
-                android:textSize="15sp"
-                android:layout_marginTop="12dp"/>
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:layout_marginTop="-20dp">
 
-            <TextView
-                android:id="@+id/txtUltimaFecha"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Fecha: --"
-                android:textColor="#526174"
-                android:textSize="15sp"
-                android:layout_marginTop="8dp"/>
+                <!-- TARJETA ÚLTIMO GASTO -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ÚLTIMO GASTO REGISTRADO"
+                    android:textColor="#12345A"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
 
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:id="@+id/txtUltimoTotal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="L. 0.00"
+                            android:textColor="#16845B"
+                            android:textSize="32sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtUltimosLitros"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Combustible: -- litros"
+                            android:textColor="#526174"
+                            android:textSize="15sp"
+                            android:layout_marginTop="8dp"/>
+
+                        <TextView
+                            android:id="@+id/txtUltimaFecha"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Fecha: --"
+                            android:textColor="#526174"
+                            android:textSize="15sp"
+                            android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- TARJETA MÉTRICAS -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="MÉTRICAS Y ESTADÍSTICAS"
+                    android:textColor="#12345A"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                        <FrameLayout
+                            android:layout_width="85dp"
+                            android:layout_height="85dp"
+                            android:gravity="center">
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:contentDescription="@null"
+                                android:src="@android:drawable/ic_menu_recent_history"
+                                app:tint="#1976D2"
+                                android:alpha="0.2"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="Mes"
+                                android:textStyle="bold"
+                                android:textColor="#12345A"
+                                android:textSize="13sp"/>
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="16dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Resumen del Mes:"
+                                android:textColor="#12345A"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:layout_marginBottom="8dp"/>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="4dp">
+                                <View
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:background="@android:color/holo_blue_dark"/>
+                                <TextView
+                                    android:id="@+id/txtPorcentajeCombustible"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text=" Combustible: 0%"
+                                    android:textColor="#526174"
+                                    android:textSize="14sp"/>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <View
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:background="@android:color/holo_orange_dark"/>
+                                <TextView
+                                    android:id="@+id/txtPorcentajeMantenimiento"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text=" Mantenimiento: 0%"
+                                    android:textColor="#526174"
+                                    android:textSize="14sp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- NUEVA: GRÁFICA POR CATEGORÍAS -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="GRÁFICA POR CATEGORÍAS"
+                    android:textColor="#12345A"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="12dp"/>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="15dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <!-- Aquí puedes poner una imagen de gráfico o un placeholder -->
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:src="@android:drawable/ic_menu_gallery"
+                            android:alpha="0.3"
+                            android:contentDescription="Gráfica"
+                            app:tint="#12345A"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Desglose de gastos por categoría"
+                            android:textColor="#718096"
+                            android:textSize="13sp"
+                            android:gravity="center"
+                            android:layout_marginTop="8dp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-    </LinearLayout>
+    <!-- FOOTER -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#FFFFFF"
+        app:itemIconTint="@color/selector_nav_color"
+        app:itemTextColor="@color/selector_nav_color"
+        app:menu="@menu/menu_bottom_navigation" />
 
-</ScrollView>
+    <!-- FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabNuevoGasto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="80dp"
+        android:contentDescription="Nuevo gasto"
+        android:src="@drawable/ic_agregar_gasto" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
