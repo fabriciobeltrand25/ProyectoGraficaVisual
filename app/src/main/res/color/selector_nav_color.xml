@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="#12345A" android:state_checked="true" /> <!-- Color activo -->
-    <item android:color="#9E9E9E" /> <!-- Color inactivo -->
+    <!-- Color cuando el ítem está seleccionado (Azul de tu marca) -->
+    <item android:color="@color/brand_blue" android:state_checked="true" />
+    <!-- Color cuando el ítem NO está seleccionado (Gris) -->
+    <item android:color="@color/text_secondary" />
 </selector>

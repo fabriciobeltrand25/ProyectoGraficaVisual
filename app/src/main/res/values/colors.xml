@@ -2,4 +2,24 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Marca AutoScan Hn -->
+    <color name="brand_primary">#12345A</color>
+    <color name="brand_blue">#1976D2</color>
+    <color name="brand_green">#16845B</color>
+    <color name="brand_orange">#E65100</color>
+    <color name="brand_danger">#C62828</color>
+    <color name="brand_on_primary_muted">#D6E0EC</color>
+
+    <!-- Superficies -->
+    <color name="bg_app">#F3F6FA</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="surface_variant">#ECEFF4</color>
+    <color name="outline">#E0E6EE</color>
+
+    <!-- Texto e iconos -->
+    <color name="text_primary">#1A1A1A</color>
+    <color name="text_secondary">#526174</color>
+    <color name="text_hint">#757575</color>
+    <color name="icon_inactive">#9E9E9E</color>
 </resources>

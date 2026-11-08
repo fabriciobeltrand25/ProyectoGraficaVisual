@@ -9,34 +9,48 @@
         android:id="@+id/previewView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:scaleType="fillCenter"/>
+        app:scaleType="fillCenter" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:background="@drawable/bg_live_panel"
         android:orientation="vertical"
-        android:background="#E812345A"
-        android:padding="20dp">
+        android:paddingHorizontal="@dimen/screen_padding"
+        android:paddingTop="@dimen/space_xl"
+        android:paddingBottom="@dimen/space_xl">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="LECTURA OCR EN TIEMPO REAL"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="16sp"/>
+            android:text="Lectura OCR en tiempo real"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txtReconocido"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Apunta la cámara hacia un recibo..."
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/space_md"
             android:maxLines="8"
-            android:scrollbars="vertical"/>
+            android:scrollbars="vertical"
+            android:text="Apunta la cámara hacia un recibo..."
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="@color/white" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnUsarTexto"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/space_lg"
+            android:backgroundTint="@color/brand_green"
+            android:text="Usar este texto"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            app:cornerRadius="@dimen/radius_button" />
 
     </LinearLayout>
 </FrameLayout>

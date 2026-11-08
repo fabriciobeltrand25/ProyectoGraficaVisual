@@ -2,6 +2,7 @@
 package com.autoscann.hn;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Bundle;
@@ -43,6 +44,9 @@ public class LivePreviewActivity extends AppCompatActivity {
 
     private boolean procesando = false;
 
+    /** Último texto leído (filas reconstruidas), que se devuelve al pulsar "Usar este texto". */
+    private volatile String ultimoTexto = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +56,8 @@ public class LivePreviewActivity extends AppCompatActivity {
         previewView = findViewById(R.id.previewView);
         txtReconocido = findViewById(R.id.txtReconocido);
 
+        findViewById(R.id.btnUsarTexto).setOnClickListener(v -> usarTexto());
+
         recognizer = TextRecognition.getClient(
                 TextRecognizerOptions.DEFAULT_OPTIONS
         );
@@ -59,6 +65,17 @@ public class LivePreviewActivity extends AppCompatActivity {
         cameraExecutor = Executors.newSingleThreadExecutor();
 
         verificarPermiso();
+    }
+
+    /** Devuelve el texto leído a la pantalla de la factura, que lo analiza para autollenar. */
+    private void usarTexto() {
+        if (ultimoTexto.trim().isEmpty()) {
+            Toast.makeText(this, "Todavía no se lee texto. Enfoca el recibo.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Intent resultado = new Intent().putExtra(BaseReciboActivity.EXTRA_TEXTO_OCR, ultimoTexto);
+        setResult(RESULT_OK, resultado);
+        finish();
     }
 
     // --------------------------------
@@ -200,9 +217,10 @@ public class LivePreviewActivity extends AppCompatActivity {
 
                 .addOnSuccessListener(text -> {
 
-                    String texto = text.getText();
+                    String texto = OcrUtil.textoPorFilas(text);
 
                     if (!texto.trim().isEmpty()) {
+                        ultimoTexto = texto;
                         runOnUiThread(() -> txtReconocido.setText(texto));
                     }
 

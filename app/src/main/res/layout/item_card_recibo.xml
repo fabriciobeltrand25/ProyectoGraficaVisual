@@ -6,105 +6,148 @@
     android:id="@+id/cardRecibo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="@dimen/space_md"
     android:clickable="true"
     android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="14dp"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardBackgroundColor="@color/surface"
+    app:cardCornerRadius="@dimen/radius_card"
     app:cardElevation="3dp"
-    app:cardBackgroundColor="#FFFFFF"
-    app:strokeWidth="1dp"
-    app:strokeColor="#E0E0E0">
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/space_md">
 
-        <!-- Imagen tomada/guardada del Recibo -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/imgRecibo"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:scaleType="centerCrop"
-            android:src="@android:drawable/ic_menu_gallery"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small"
-            tools:src="@android:drawable/ic_menu_report_image" />
-
-        <!-- Información central y derecha -->
+        <!-- Fila superior: miniatura + datos -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="12dp"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <!-- Fila Superior: Título + ID -->
+            <!-- Miniatura de la factura -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgRecibo"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@color/surface_variant"
+                android:scaleType="centerCrop"
+                android:src="@android:drawable/ic_menu_gallery"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small"
+                tools:src="@android:drawable/ic_menu_report_image" />
+
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:layout_marginStart="@dimen/space_md"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <!-- Título del Recibo -->
-                <TextView
-                    android:id="@+id/tvTituloRecibo"
-                    android:layout_width="0dp"
+                <!-- Título + correlativo -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Recibo de Compra"
-                    android:textColor="#212121"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    tools:text="Compra Supermercado" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <!-- Badge / N° Correlativo (#1, #2, #3...) -->
+                    <TextView
+                        android:id="@+id/tvTituloRecibo"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textAppearance="?attr/textAppearanceTitleMedium"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold"
+                        tools:text="Compra Supermercado" />
+
+                    <TextView
+                        android:id="@+id/tvIdRecibo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/space_xs"
+                        android:background="#E3EEFA"
+                        android:paddingHorizontal="@dimen/space_sm"
+                        android:paddingVertical="@dimen/space_xs"
+                        android:text="#0"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="@color/brand_blue"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Categoría con color propio -->
                 <TextView
-                    android:id="@+id/tvIdRecibo"
+                    android:id="@+id/tvCategoria"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="#0"
-                    android:textSize="13sp"
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="@color/brand_green"
                     android:textStyle="bold"
-                    android:textColor="#0D47A1"
-                    android:background="#E3F2FD"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="3dp"
-                    android:layout_marginStart="6dp"/>
-            </LinearLayout>
+                    tools:text="Gasolina" />
 
-            <!-- Fila Inferior: Fecha + Acción -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical">
-
-                <!-- Fecha del Recibo -->
+                <!-- Fecha y total -->
                 <TextView
                     android:id="@+id/tvFechaRecibo"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Fecha: 03/11/2026"
-                    android:textColor="#757575"
-                    android:textSize="12sp" />
-
-                <!-- Indicador de acción (Opcional: icono ver/editar) -->
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@android:drawable/ic_menu_more"
-                    app:tint="#9E9E9E"
-                    android:contentDescription="Opciones" />
+                    android:layout_marginTop="@dimen/space_xs"
+                    android:text="Fecha: 03/11/2026   ·   L. 0.00"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="@color/text_secondary" />
             </LinearLayout>
-
         </LinearLayout>
 
+        <!-- Separador sutil -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="@dimen/space_md"
+            android:background="@color/outline" />
+
+        <!-- Acciones: texto + icono, con área táctil de 48dp -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerRecibo"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/touch_min"
+                android:text="Ver"
+                android:textAllCaps="false"
+                android:textColor="@color/brand_primary"
+                app:icon="@android:drawable/ic_menu_view"
+                app:iconTint="@color/brand_primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditarRecibo"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/touch_min"
+                android:text="Editar"
+                android:textAllCaps="false"
+                android:textColor="@color/brand_blue"
+                app:icon="@android:drawable/ic_menu_edit"
+                app:iconTint="@color/brand_blue" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEliminarRecibo"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/touch_min"
+                android:text="Borrar"
+                android:textAllCaps="false"
+                android:textColor="@color/brand_danger"
+                app:icon="@android:drawable/ic_menu_delete"
+                app:iconTint="@color/brand_danger" />
+        </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

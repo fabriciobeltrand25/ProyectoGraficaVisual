@@ -20,7 +20,11 @@
 
 
         <activity android:name=".LivePreviewActivity" android:exported="false" />
-        <activity android:name=".NuevoGastoActivity" android:exported="false" />
+        <activity
+            android:name=".NuevoGasolinaActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" /> <!-- ESTO ES LA MAGIA -->
+        <activity android:name=".NuevoMantenimientoActivity" android:exported="false" />
         <activity android:name=".RegistrosActivity" android:exported="false" />
 
         <activity

@@ -1,8 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+    <!-- Tema base: Material 3 con la paleta de la marca.
+         Así FAB, chips, botones tonales, barra inferior y campos toman el mismo azul. -->
     <style name="Base.Theme.AutoScanHn" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">#D6E3F5</item>
+        <item name="colorOnPrimaryContainer">@color/brand_primary</item>
+        <item name="colorSecondary">@color/brand_blue</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">#D6E3F5</item>
+        <item name="colorOnSecondaryContainer">@color/brand_primary</item>
     </style>
 
     <style name="Theme.AutoScanHn" parent="Base.Theme.AutoScanHn" />

@@ -4,109 +4,82 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg_app"
     android:orientation="vertical"
-    android:background="#F5F5F7"
-    android:padding="16dp">
+    android:padding="@dimen/screen_padding">
 
     <!-- TÍTULO Y BOTÓN DE RETROCESO -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="12dp">
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/space_md">
 
-        <ImageView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAtrasRegistros"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@android:drawable/ic_menu_revert"
-            app:tint="#1A1A1A"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"/>
+            style="@style/Widget.Material3.Button.IconButton"
+            android:layout_width="@dimen/touch_min"
+            android:layout_height="@dimen/touch_min"
+            android:layout_marginStart="-12dp"
+            android:contentDescription="Volver"
+            app:icon="@android:drawable/ic_menu_revert"
+            app:iconSize="24dp"
+            app:iconTint="@color/brand_primary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Registros de Recibos"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#1A1A1A"
-            android:layout_marginStart="12dp" />
+            android:layout_marginStart="@dimen/space_xs"
+            android:text="Registros"
+            android:textAppearance="?attr/textAppearanceHeadlineSmall"
+            android:textColor="@color/brand_primary"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- BUSCADOR -->
-    <com.google.android.material.card.MaterialCardView
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="2dp"
-        app:cardBackgroundColor="#FFFFFF"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="@dimen/space_md"
+        android:hint="Buscar por nombre o correlativo"
+        app:boxBackgroundColor="@color/surface"
+        app:startIconDrawable="@android:drawable/ic_menu_search"
+        app:startIconTint="@color/text_hint"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etBuscadorRecibos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="4dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_search"
-                app:tint="#757575" />
-
-            <EditText
-                android:id="@+id/etBuscadorRecibos"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:hint="Buscar por nombre o correlativo..."
-                android:textColorHint="#757575"
-                android:textColor="#212121"
-                android:background="@null"
-                android:paddingStart="8dp"
-                android:textSize="14sp"
-                android:imeOptions="actionSearch"
-                android:inputType="text" />
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="@color/text_primary" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- FILTRO DE CATEGORÍAS -->
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:layout_marginBottom="12dp">
+        android:layout_marginBottom="@dimen/space_md"
+        android:scrollbars="none">
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chipGroupCategorias"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:chipSpacingHorizontal="@dimen/space_sm"
+            app:selectionRequired="true"
+            app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipTodas"
                 style="@style/Widget.Material3.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Todas"
-                android:checked="true" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipGastos"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gastos" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipMantenimiento"
-                style="@style/Widget.Material3.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mantenimiento" />
+                android:checked="true"
+                android:text="Todas" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipGasolina"
@@ -114,15 +87,41 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Gasolina" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipMantenimiento"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mantenimiento" />
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
 
-    <!-- LISTA -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRegistrosRecibos"
+    <!-- LISTA (con aviso cuando no hay registros) -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        tools:listitem="@layout/item_card_recibo" />
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRegistrosRecibos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/space_lg"
+            android:scrollbars="none"
+            tools:listitem="@layout/item_card_recibo" />
+
+        <TextView
+            android:id="@+id/txtVacio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Aún no hay registros.\nEscanea tu primera factura desde Inicio."
+            android:textAppearance="?attr/textAppearanceBodyLarge"
+            android:textColor="@color/text_secondary"
+            android:visibility="gone" />
+    </FrameLayout>
 
 </LinearLayout>

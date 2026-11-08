@@ -1,3 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+
+    <!-- Espaciado (escala única para todas las pantallas) -->
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_sm">8dp</dimen>
+    <dimen name="space_md">12dp</dimen>
+    <dimen name="space_lg">16dp</dimen>
+    <dimen name="space_xl">24dp</dimen>
+    <dimen name="screen_padding">20dp</dimen>
+
+    <!-- Esquinas redondeadas -->
+    <dimen name="radius_card">16dp</dimen>
+    <dimen name="radius_button">14dp</dimen>
+    <dimen name="radius_thumb">12dp</dimen>
+
+    <!-- Tamaños táctiles (mínimo recomendado por Material: 48dp) -->
+    <dimen name="touch_min">48dp</dimen>
+    <dimen name="button_height">56dp</dimen>
+    <dimen name="action_button_height">76dp</dimen>
 </resources>

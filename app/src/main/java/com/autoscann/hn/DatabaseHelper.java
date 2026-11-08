@@ -1,4 +1,3 @@
-
 package com.autoscann.hn;
 
 import android.content.ContentValues;
@@ -7,158 +6,161 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+/**
+ * Base de datos de registros de facturas. Una sola tabla "gastos" con dos tipos:
+ * Gasolina (litros) y Mantenimiento (descripción, cantidad y precio unitario).
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    public static final String CAT_GASOLINA = "Gasolina";
+    public static final String CAT_MANTENIMIENTO = "Mantenimiento";
+
     private static final String DB_NAME = "autoscann.db";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
+    private static final String TABLA = "gastos";
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
-
-
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "CREATE TABLE gastos (" +
+        db.execSQL("CREATE TABLE " + TABLA + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 "total REAL NOT NULL, " +
-                "litros REAL, " +
-                "fecha TEXT NOT NULL, " +
+                "litros REAL, " +            // Gasolina: cantidad de combustible
+                "cantidad REAL, " +          // Mantenimiento: unidades del artículo
+                "precio_unitario REAL, " +   // Mantenimiento
+                "descripcion TEXT, " +       // Mantenimiento: repuestos o servicios
+                "fecha TEXT NOT NULL, " +    // DD/MM/AAAA
                 "texto_ocr TEXT, " +
-                "categoria TEXT, " +       // NUEVO: Gasolina, Mantenimiento, etc.
-                "nombre TEXT, " +          // NUEVO: Nombre personalizado
-                "imagen_uri TEXT)";        // NUEVO: Ruta de la imagen guardada
-        db.execSQL(sql);
+                "categoria TEXT, " +         // Gasolina | Mantenimiento
+                "nombre TEXT, " +            // Comercio, gasolinera o taller
+                "imagen_uri TEXT)");         // Ruta absoluta de la foto
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // En producción, aquí se hace un ALTER TABLE. Para este proyecto, recreamos.
-        db.execSQL("DROP TABLE IF EXISTS gastos");
-        onCreate(db);
+        if (oldVersion < 2) {
+            // La versión 1 no tenía categoría ni foto: se recrea la tabla (comportamiento original).
+            db.execSQL("DROP TABLE IF EXISTS " + TABLA);
+            onCreate(db);
+            return;
+        }
+        if (oldVersion < 3) {
+            // Migración conservando los datos existentes
+            db.execSQL("ALTER TABLE " + TABLA + " ADD COLUMN cantidad REAL");
+            db.execSQL("ALTER TABLE " + TABLA + " ADD COLUMN precio_unitario REAL");
+            db.execSQL("ALTER TABLE " + TABLA + " ADD COLUMN descripcion TEXT");
+        }
     }
 
+    // ---------------------------------------------------------------
+    // Escritura
+    // ---------------------------------------------------------------
 
-    // Guardar un gasto
-    public long insertarGasto(double total, double litros, String fecha,
-                              String textoOCR, String categoria,
-                              String nombre, String imagenUri) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put("total", total);
-        values.put("litros", litros);
-        values.put("fecha", fecha);
-        values.put("texto_ocr", textoOCR);
-        values.put("categoria", categoria);
-        values.put("nombre", nombre);
-        values.put("imagen_uri", imagenUri);
-        long resultado = db.insert("gastos", null, values);
-        db.close();
-        return resultado;
+    /** Inserta un registro. Devuelve el id nuevo o -1 si falla. */
+    public long insertarRegistro(ContentValues valores) {
+        return getWritableDatabase().insert(TABLA, null, valores);
     }
 
+    /** Actualiza un registro existente. Devuelve el número de filas modificadas. */
+    public int actualizarRegistro(int id, ContentValues valores) {
+        return getWritableDatabase().update(TABLA, valores, "id = ?",
+                new String[]{String.valueOf(id)});
+    }
 
+    public boolean eliminarRegistro(int id) {
+        return getWritableDatabase().delete(TABLA, "id = ?",
+                new String[]{String.valueOf(id)}) > 0;
+    }
 
+    // ---------------------------------------------------------------
+    // Lectura
+    // ---------------------------------------------------------------
 
-    // Obtener el último gasto registrado
+    /** Un registro por id (el cursor debe cerrarse). */
+    public Cursor obtenerRegistroPorId(int id) {
+        return getReadableDatabase().rawQuery(
+                "SELECT * FROM " + TABLA + " WHERE id = ?",
+                new String[]{String.valueOf(id)});
+    }
+
+    /** El registro más reciente (el cursor debe cerrarse). */
     public Cursor obtenerUltimoGasto() {
-
-        SQLiteDatabase db = getReadableDatabase();
-
-        return db.rawQuery(
-                "SELECT * FROM gastos ORDER BY id DESC LIMIT 1",
-                null
-        );
+        return getReadableDatabase().rawQuery(
+                "SELECT * FROM " + TABLA + " ORDER BY id DESC LIMIT 1", null);
     }
 
-    public java.util.Map<String, Float> obtenerPorcentajesCategorias() {
-        java.util.Map<String, Float> porcentajes = new java.util.HashMap<>();
-        SQLiteDatabase db = getReadableDatabase();
-
-        // Agrupamos por categoría y sumamos los totales
-        Cursor cursor = db.rawQuery(
-                "SELECT categoria, SUM(total) as suma_total FROM gastos GROUP BY categoria", null);
-
-        float totalGeneral = 0;
-        java.util.Map<String, Float> sumas = new java.util.HashMap<>();
-
-        if (cursor.moveToFirst()) {
-            do {
-                String cat = cursor.getString(0);
-                if (cat == null) cat = "Gastos"; // Por defecto
-                float suma = cursor.getFloat(1);
-                sumas.put(cat, suma);
-                totalGeneral += suma;
-            } while (cursor.moveToNext());
+    /** Cantidad de registros y suma de todos los totales, en {cantidad, total}. */
+    public double[] obtenerResumen() {
+        Cursor c = getReadableDatabase().rawQuery(
+                "SELECT COUNT(*), COALESCE(SUM(total), 0) FROM " + TABLA, null);
+        try {
+            if (!c.moveToFirst()) return new double[]{0, 0};
+            return new double[]{c.getDouble(0), c.getDouble(1)};
+        } finally {
+            c.close();
         }
-        cursor.close();
+    }
 
-        if (totalGeneral > 0) {
-            for (java.util.Map.Entry<String, Float> entry : sumas.entrySet()) {
-                porcentajes.put(entry.getKey(), (entry.getValue() / totalGeneral) * 100);
-            }
+    /**
+     * Registros para la lista: filtra por texto (nombre o id) y por categoria, si se indican.
+     * El cursor debe cerrarse.
+     */
+    public Cursor buscarRegistros(String texto, String categoria) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM " + TABLA + " WHERE 1=1");
+        List<String> args = new ArrayList<>();
+
+        if (texto != null && !texto.isEmpty()) {
+            sql.append(" AND (nombre LIKE ? OR CAST(id AS TEXT) LIKE ?)");
+            args.add("%" + texto + "%");
+            args.add("%" + texto + "%");
         }
-        return porcentajes;
+        if (categoria != null && !categoria.isEmpty()) {
+            sql.append(" AND categoria = ?");
+            args.add(categoria);
+        }
+        sql.append(" ORDER BY id DESC");
+
+        return getReadableDatabase().rawQuery(sql.toString(), args.toArray(new String[0]));
     }
 
-    // Obtener todos los gastos para el RecyclerView
-    public Cursor obtenerTodosLosGastos() {
-        SQLiteDatabase db = getReadableDatabase();
-        return db.rawQuery("SELECT * FROM gastos ORDER BY id DESC", null);
-    }
-
-    // Obtener el total de gastos del mes actual (asumiendo formato DD/MM/YYYY)
+    /**
+     * Porcentaje del gasto del mes actual en {combustible, mantenimiento}, sobre el total
+     * de esos dos tipos. Las fechas se guardan como DD/MM/AAAA, así que el mes es MM/AAAA.
+     */
     public double[] obtenerEstadisticasMes() {
-        SQLiteDatabase db = getReadableDatabase();
-        double totalCombustible = 0;
-        double totalMantenimiento = 0;
+        String mesActual = new SimpleDateFormat("MM/yyyy", Locale.US).format(new Date());
 
-        // Obtenemos el mes actual en formato MM
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("MM");
-        String mesActual = sdf.format(new java.util.Date());
-
-        // Buscamos todos los registros
-        Cursor cursor = db.rawQuery("SELECT total, litros FROM gastos", null);
-
-        if (cursor.moveToFirst()) {
-            do {
-                // Asumiendo que la fecha está en formato DD/MM/YYYY
-                // (Aquí podrías hacer un parseo más robusto si guardas la fecha completa)
-                // Para simplificar, si tiene litros > 0 lo contamos como combustible, sino como mantenimiento
-                double total = cursor.getDouble(0);
-                double litros = cursor.getDouble(1);
-
-                if (litros > 0) {
-                    totalCombustible += total;
-                } else {
-                    totalMantenimiento += total;
+        double combustible = 0;
+        double mantenimiento = 0;
+        Cursor c = getReadableDatabase().rawQuery(
+                "SELECT categoria, SUM(total) FROM " + TABLA +
+                        " WHERE substr(fecha, 4, 7) = ? GROUP BY categoria",
+                new String[]{mesActual});
+        try {
+            while (c.moveToNext()) {
+                String categoria = c.isNull(0) ? "" : c.getString(0);
+                double suma = c.getDouble(1);
+                if (CAT_GASOLINA.equals(categoria)) {
+                    combustible += suma;
+                } else if (CAT_MANTENIMIENTO.equals(categoria)) {
+                    mantenimiento += suma;
                 }
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-
-        double totalGeneral = totalCombustible + totalMantenimiento;
-        double porcentajeCombustible = 0;
-        double porcentajeMantenimiento = 0;
-
-        if (totalGeneral > 0) {
-            porcentajeCombustible = (totalCombustible / totalGeneral) * 100;
-            porcentajeMantenimiento = (totalMantenimiento / totalGeneral) * 100;
+            }
+        } finally {
+            c.close();
         }
 
-        return new double[]{porcentajeCombustible, porcentajeMantenimiento};
+        double general = combustible + mantenimiento;
+        if (general <= 0) return new double[]{0, 0};
+        return new double[]{(combustible / general) * 100, (mantenimiento / general) * 100};
     }
-
-    // Eliminar un gasto
-    public boolean eliminarGasto(int id) {
-        SQLiteDatabase db = getWritableDatabase();
-        int resultado = db.delete("gastos", "id = ?", new String[]{String.valueOf(id)});
-        db.close();
-        return resultado > 0;
-    }
-
-
-
-
 }

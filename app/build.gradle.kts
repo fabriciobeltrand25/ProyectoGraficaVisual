@@ -47,7 +47,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
 
 
-// Google ML Kit - Reconocimiento OCR
+// Google ML Kit - Reconocimiento OCR la de español
     implementation("com.google.mlkit:text-recognition:16.0.1")
 
 // Google ML Kit - Escaner de documentos

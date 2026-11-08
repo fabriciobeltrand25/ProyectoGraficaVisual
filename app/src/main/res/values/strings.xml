@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">AutoScanHn</string>
     <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
+    <string name="tipo_recibo_formato">Tipo recibo: %1$s</string>
+
+
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>

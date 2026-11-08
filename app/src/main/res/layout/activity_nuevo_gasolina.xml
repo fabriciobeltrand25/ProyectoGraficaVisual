@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_app"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/screen_padding">
+
+        <!-- ENCABEZADO -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/space_md">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAtras"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="@dimen/touch_min"
+                android:layout_height="@dimen/touch_min"
+                android:layout_marginStart="-12dp"
+                android:contentDescription="Volver"
+                app:icon="@android:drawable/ic_menu_revert"
+                app:iconSize="24dp"
+                app:iconTint="@color/brand_primary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_xs"
+                android:text="Registrar Gasolina"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="@color/brand_primary"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- TIPO FIJO -->
+        <com.google.android.material.chip.Chip
+            android:id="@+id/txtTipoRecibo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_lg"
+            android:clickable="false"
+            android:focusable="false"
+            android:text="Tipo Recibo: Gasolina"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:chipBackgroundColor="@color/brand_green"
+            app:chipStrokeWidth="0dp" />
+
+        <!-- VISOR DE LA FACTURA -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_lg"
+            app:cardBackgroundColor="@color/surface"
+            app:cardCornerRadius="@dimen/radius_card"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/surface_variant"
+                    android:contentDescription="Foto de la factura"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/layoutSinFoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/surface_variant"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="@dimen/space_lg">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:contentDescription="@null"
+                        android:src="@android:drawable/ic_menu_gallery"
+                        app:tint="@color/text_hint" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:text="Sin foto de la factura"
+                        android:textAppearance="?attr/textAppearanceLabelLarge"
+                        android:textColor="@color/text_secondary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_xs"
+                        android:text="Escanea, carga de galería o usa Live"
+                        android:textAppearance="?attr/textAppearanceBodySmall"
+                        android:textColor="@color/text_hint" />
+                </LinearLayout>
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- BOTONES DE CAPTURA -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            android:layout_marginBottom="@dimen/space_lg">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEscanear"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/action_button_height"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/space_sm"
+                android:text="Escáner"
+                android:textAllCaps="false"
+                app:cornerRadius="@dimen/radius_button"
+                app:icon="@android:drawable/ic_menu_camera"
+                app:iconGravity="top"
+                app:iconPadding="@dimen/space_xs"
+                app:iconSize="24dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGaleria"
+                style="?attr/materialButtonTonalStyle"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/action_button_height"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="@dimen/space_sm"
+                android:text="Galería"
+                android:textAllCaps="false"
+                app:cornerRadius="@dimen/radius_button"
+                app:icon="@android:drawable/ic_menu_gallery"
+                app:iconGravity="top"
+                app:iconPadding="@dimen/space_xs"
+                app:iconSize="24dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLive"
+                style="?attr/materialButtonTonalStyle"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/action_button_height"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/space_sm"
+                android:text="Live"
+                android:textAllCaps="false"
+                app:cornerRadius="@dimen/radius_button"
+                app:icon="@android:drawable/ic_menu_view"
+                app:iconGravity="top"
+                app:iconPadding="@dimen/space_xs"
+                app:iconSize="24dp" />
+        </LinearLayout>
+
+        <!-- ESTADO DEL ESCANEO -->
+        <LinearLayout
+            android:id="@+id/panelEstado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_lg"
+            android:background="@drawable/bg_surface_rounded"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/space_lg"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/progressEstado"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/txtEstado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_md"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="@color/brand_primary" />
+        </LinearLayout>
+
+        <!-- BOTONES OCR Y RECARGAR -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_xl"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVerOcr"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/space_sm"
+                android:text="Ver texto leído (OCR)"
+                android:textAllCaps="false"
+                android:textColor="@color/brand_primary"
+                app:cornerRadius="@dimen/radius_button" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRecargar"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/button_height"
+                android:text="🔄"
+                android:textSize="18sp"
+                android:textColor="@color/brand_primary"
+                app:cornerRadius="@dimen/radius_button" />
+        </LinearLayout>
+
+        <!-- CAMPOS -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilComercio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_md"
+            android:hint="Comercio / Gasolinera (opcional)"
+            app:boxBackgroundColor="@color/surface"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etComercio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="@dimen/space_md">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilLitros"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/space_sm"
+                android:hint="Litros de combustible"
+                app:boxBackgroundColor="@color/surface"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etLitros"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilTotal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/space_sm"
+                android:hint="Total en Lempiras (L.)"
+                app:boxBackgroundColor="@color/surface"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etTotal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilFecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_xl"
+            android:hint="Fecha (DD/MM/AAAA)"
+            app:boxBackgroundColor="@color/surface"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFecha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:maxLength="10"
+                android:textColor="@color/text_primary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- ACCIONES FINALES -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelar"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/space_sm"
+                android:text="Cancelar"
+                android:textAllCaps="false"
+                android:textColor="@color/brand_primary"
+                app:cornerRadius="@dimen/radius_button" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGuardar"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/space_sm"
+                android:backgroundTint="@color/brand_green"
+                android:text="Guardar"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                app:cornerRadius="@dimen/radius_button"
+                app:icon="@android:drawable/ic_menu_save"
+                app:iconTint="@color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
