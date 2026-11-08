@@ -8,7 +8,6 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Locale;
 
-/** Registro de un ticket o factura de gasolina (litros o galones, total en Lempiras). */
 public class NuevoGasolinaActivity extends BaseReciboActivity {
 
     private TextInputLayout tilLitros;
@@ -50,21 +49,27 @@ public class NuevoGasolinaActivity extends BaseReciboActivity {
         etLitros.setText(numeroTexto(c, "litros", "%.3f"));
     }
 
+    // VALIDACIÓN CON RETORNO BOOLEAN
     @Override
-    protected void leerCamposEspecificos(ContentValues v) {
-        double litros = numero(etLitros.getText().toString(), "Litros de combustible");
-        if (litros <= 0) {
-            throw new IllegalArgumentException("Los litros deben ser mayores que cero");
+    protected boolean leerCamposEspecificos(ContentValues v) {
+        if (tilLitros != null) tilLitros.setError(null); // Limpiar error
+        try {
+            double litros = numero(etLitros.getText().toString(), "Litros de combustible");
+            if (litros <= 0) {
+                if (tilLitros != null) tilLitros.setError("Debe ser mayor a cero");
+                return true; // Hay error, se pinta de rojo
+            }
+            v.put("litros", litros);
+            return false; // Todo bien
+        } catch (IllegalArgumentException e) {
+            if (tilLitros != null) tilLitros.setError(e.getMessage());
+            return true; // Hay error, se pinta de rojo
         }
-        v.put("litros", litros);
     }
 
     @Override
     protected String rescatarCamposEspecificos(String textoOcr) {
         StringBuilder sb = new StringBuilder();
-        EditText etLitros = findViewById(R.id.etLitros);
-
-        // Si el campo de litros está vacío, intentamos rescatarlo
         if (etLitros != null && etLitros.getText().toString().trim().isEmpty()) {
             double litrosExtra = ReceiptParser.buscarLitrosCrudo(textoOcr);
             if (litrosExtra > 0) {

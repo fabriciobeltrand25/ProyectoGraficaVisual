@@ -4,12 +4,14 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.widget.EditText;
 
+import com.google.android.material.textfield.TextInputLayout;
+
 import java.util.Locale;
 
-/** Registro de una factura de repuestos o de taller (aceite, filtros, mano de obra, etc.). */
 public class NuevoMantenimientoActivity extends BaseReciboActivity {
 
     private EditText etDescripcion, etCantidad, etPrecioUnitario;
+    private TextInputLayout tilDescripcion;
 
     @Override
     protected int getLayoutId() {
@@ -31,6 +33,7 @@ public class NuevoMantenimientoActivity extends BaseReciboActivity {
         etDescripcion = findViewById(R.id.etDescripcion);
         etCantidad = findViewById(R.id.etCantidad);
         etPrecioUnitario = findViewById(R.id.etPrecioUnitario);
+        tilDescripcion = findViewById(R.id.tilDescripcion);
     }
 
     @Override
@@ -53,11 +56,15 @@ public class NuevoMantenimientoActivity extends BaseReciboActivity {
         etPrecioUnitario.setText(numeroTexto(c, "precio_unitario", "%.2f"));
     }
 
+    // VALIDACIÓN CON RETORNO BOOLEAN
     @Override
-    protected void leerCamposEspecificos(ContentValues v) {
+    protected boolean leerCamposEspecificos(ContentValues v) {
+        if (tilDescripcion != null) tilDescripcion.setError(null);
+
         String descripcion = etDescripcion.getText().toString().trim();
         if (descripcion.isEmpty()) {
-            throw new IllegalArgumentException("Describe el repuesto o servicio");
+            if (tilDescripcion != null) tilDescripcion.setError("Describe el repuesto o servicio");
+            return true; // Hay error, se pinta de rojo
         }
 
         double cantidad = numeroOpcional(etCantidad.getText().toString(), "Cantidad");
@@ -65,14 +72,14 @@ public class NuevoMantenimientoActivity extends BaseReciboActivity {
 
         double total = v.getAsDouble("total");
         double precio = numeroOpcional(etPrecioUnitario.getText().toString(), "Precio unitario");
-        if (precio <= 0) precio = total / cantidad; // si no se escribe, se calcula
+        if (precio <= 0) precio = total / cantidad;
 
         v.put("descripcion", descripcion);
         v.put("cantidad", cantidad);
         v.put("precio_unitario", precio);
+        return false; // Todo bien
     }
 
-    /** "1" para cantidades enteras, "1.50" para fraccionarias. */
     private static String formatoCantidad(double cantidad) {
         return cantidad == Math.floor(cantidad)
                 ? String.format(Locale.US, "%.0f", cantidad)
@@ -82,9 +89,6 @@ public class NuevoMantenimientoActivity extends BaseReciboActivity {
     @Override
     protected String rescatarCamposEspecificos(String textoOcr) {
         StringBuilder sb = new StringBuilder();
-        EditText etDescripcion = findViewById(R.id.etDescripcion);
-
-        // Si la descripción está vacía, intentamos rescatarla usando el parser original
         if (etDescripcion != null && etDescripcion.getText().toString().trim().isEmpty()) {
             ReceiptParser.Resultado r = ReceiptParser.analizarMantenimiento(textoOcr);
             if (r.descripcion != null && !r.descripcion.isEmpty()) {

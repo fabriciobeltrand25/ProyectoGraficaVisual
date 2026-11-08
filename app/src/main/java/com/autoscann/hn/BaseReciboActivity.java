@@ -35,6 +35,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.exifinterface.media.ExifInterface;
 
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanner;
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions;
@@ -65,6 +66,8 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
     protected DatabaseHelper dbHelper;
     protected EditText etComercio, etTotal, etFecha;
 
+    protected TextInputLayout tilComercio, tilTotal, tilFecha;
+
     protected int idEditando = -1;
     protected String textoOcr = "";
 
@@ -79,12 +82,20 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
     private String imagenOriginal = "";
 
     protected abstract int getLayoutId();
+
     protected abstract String getTipo();
+
     protected abstract ReceiptParser.Resultado analizarTexto(String texto);
+
     protected abstract void aplicarResultado(ReceiptParser.Resultado r);
+
     protected abstract void enlazarCamposEspecificos();
+
     protected abstract void cargarCamposEspecificos(Cursor c);
-    protected abstract void leerCamposEspecificos(ContentValues v);
+
+    // CAMBIO AQUÍ: Ahora devuelve boolean (true = hay error)
+    protected abstract boolean leerCamposEspecificos(ContentValues v);
+
     protected abstract String rescatarCamposEspecificos(String textoOcr);
 
     private final ActivityResultLauncher<String> galeriaLauncher = registerForActivityResult(
@@ -136,6 +147,11 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
         etComercio = findViewById(R.id.etComercio);
         etTotal = findViewById(R.id.etTotal);
         etFecha = findViewById(R.id.etFecha);
+
+        tilComercio = findViewById(R.id.tilComercio);
+        tilTotal = findViewById(R.id.tilTotal);
+        tilFecha = findViewById(R.id.tilFecha);
+
         panelEstado = findViewById(R.id.panelEstado);
         txtEstado = findViewById(R.id.txtEstado);
         progressEstado = findViewById(R.id.progressEstado);
@@ -150,7 +166,6 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
         findViewById(R.id.btnLive).setOnClickListener(v ->
                 liveLauncher.launch(new Intent(this, LivePreviewActivity.class)));
 
-        // AQUÍ AGREGAMOS EL BOTÓN RECARGAR (asegúrate de tenerlo en el XML)
         View btnRecargar = findViewById(R.id.btnRecargar);
         if (btnRecargar != null) {
             btnRecargar.setOnClickListener(v -> recargarCamposOcr());
@@ -160,6 +175,7 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
         findViewById(R.id.btnCancelar).setOnClickListener(v -> cancelar());
         findViewById(R.id.btnGuardar).setOnClickListener(v -> guardar());
 
+        // Aquí dejamos tu máscara de fecha intacta tal como la tenías
         etFecha.addTextChangedListener(new MascaraFecha());
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
@@ -332,10 +348,14 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
             int orientacion = new ExifInterface(ruta).getAttributeInt(
                     ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
             switch (orientacion) {
-                case ExifInterface.ORIENTATION_ROTATE_90: return 90;
-                case ExifInterface.ORIENTATION_ROTATE_180: return 180;
-                case ExifInterface.ORIENTATION_ROTATE_270: return 270;
-                default: return 0;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    return 90;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    return 180;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    return 270;
+                default:
+                    return 0;
             }
         } catch (IOException e) {
             return 0;
@@ -381,7 +401,7 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
 
             String mensaje = r.validado
                     ? "Datos verificados con la validación cruzada"
-                    : "No se pudo verificar la factura. Revisa los datos antes de guardar.";
+                    : "Revisa los datos antes de guardar.";
             if (r.fecha.isEmpty()) {
                 mensaje += "\nNo se leyó la fecha: escríbela como DD/MM/AAAA.";
             }
@@ -456,27 +476,45 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
         }
     }
 
+    // --- LÓGICA DE GUARDADO CON VALIDACIÓN EN TODOS LOS CAMPOS ---
     private void guardar() {
+        if (tilComercio != null) tilComercio.setError(null);
+        if (tilTotal != null) tilTotal.setError(null);
+        if (tilFecha != null) tilFecha.setError(null);
+
         ContentValues v = new ContentValues();
+        boolean hayError = false;
+
         try {
             double total = numero(etTotal.getText().toString(), "Total en L.");
             if (total <= 0) {
-                throw new IllegalArgumentException("El total debe ser mayor que cero");
+                if (tilTotal != null) tilTotal.setError("El total debe ser mayor a cero");
+                hayError = true;
+            } else {
+                v.put("total", total);
             }
-            String fecha = ReceiptParser.validarFechaManual(
-                    etFecha.getText().toString(), LocalDate.now());
-            if (fecha.isEmpty()) {
-                throw new IllegalArgumentException(
-                        "Fecha inválida. Usa DD/MM/AAAA y que no sea una fecha futura");
-            }
-
-            v.put("nombre", etComercio.getText().toString().trim());
-            v.put("total", total);
-            v.put("fecha", fecha);
-            leerCamposEspecificos(v);
         } catch (IllegalArgumentException e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-            return;
+            if (tilTotal != null) tilTotal.setError(e.getMessage());
+            hayError = true;
+        }
+
+        String fecha = ReceiptParser.validarFechaManual(etFecha.getText().toString(), LocalDate.now());
+        if (fecha.isEmpty()) {
+            if (tilFecha != null) tilFecha.setError("Fecha inválida o futura (usa DD/MM/AAAA)");
+            hayError = true;
+        } else {
+            v.put("fecha", fecha);
+        }
+
+        v.put("nombre", etComercio.getText().toString().trim());
+
+        // AQUÍ EVALUAMOS SI LOS CAMPOS ESPECÍFICOS TIENEN ERROR
+        if (leerCamposEspecificos(v)) {
+            hayError = true;
+        }
+
+        if (hayError) {
+            return; // Si hay cualquier error en cualquier campo, frena y pinta los rojos
         }
 
         v.put("categoria", getTipo());
@@ -577,7 +615,6 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
                 .show();
     }
 
-    // --- NUEVA FUNCIÓN RECARGAR ---
     private void recargarCamposOcr() {
         if (textoOcr.isEmpty()) {
             Toast.makeText(this, "No hay texto para recargar. Escanea una imagen primero.", Toast.LENGTH_SHORT).show();
@@ -585,14 +622,12 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
         }
 
         try {
-            // 1. Volvemos a analizar el texto con el parser original
             ReceiptParser.Resultado r = analizarTexto(textoOcr);
             if (r.total > 0) etTotal.setText(String.format(Locale.US, "%.2f", r.total));
             if (!r.fecha.isEmpty()) etFecha.setText(r.fecha);
             if (!r.comercio.isEmpty()) etComercio.setText(r.comercio);
             aplicarResultado(r);
 
-            // 2. Forzamos el rescate crudo (por si el parser falló)
             if (etComercio.getText().toString().trim().isEmpty()) {
                 etComercio.setText(ReceiptParser.buscarComercioCrudo(textoOcr));
             }
@@ -628,13 +663,13 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
 
     protected static double numero(String entrada, String campo) {
         String t = entrada == null ? "" : entrada.trim();
-        if (t.isEmpty()) throw new IllegalArgumentException("Completa el campo: " + campo);
+        if (t.isEmpty()) throw new IllegalArgumentException("Este campo es obligatorio");
         if (t.contains(".") && t.contains(",")) t = t.replace(",", "");
         else t = t.replace(",", ".");
         try {
             return Double.parseDouble(t);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Valor no válido en: " + campo);
+            throw new IllegalArgumentException("Valor no válido");
         }
     }
 
@@ -642,24 +677,46 @@ public abstract class BaseReciboActivity extends AppCompatActivity {
         return entrada == null || entrada.trim().isEmpty() ? 0 : numero(entrada, campo);
     }
 
+    // --- TU MÁSCARA DE FECHA ORIGINAL ---
+    // --- MÁSCARA DE FECHA MEJORADA (Acepta escribir / manualmente) ---
     private static class MascaraFecha implements TextWatcher {
         private boolean formateando = false;
-        @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-        @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-        @Override public void afterTextChanged(Editable s) {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+        @Override
+        public void afterTextChanged(Editable s) {
             if (formateando) return;
-            String digitos = s.toString().replaceAll("\\D", "");
-            if (digitos.length() > 8) digitos = digitos.substring(0, 8);
+
+            String textoActual = s.toString();
+
+            // 1. Extraemos solo los números (ignoramos si el usuario tecleó /)
+            String digitos = textoActual.replaceAll("\\D", "");
+
+            // 2. Límite de 8 dígitos (DDMMAAAA)
+            if (digitos.length() > 8) {
+                digitos = digitos.substring(0, 8);
+            }
+
+            // 3. Formateamos insertando las barras
             StringBuilder formateado = new StringBuilder();
             for (int i = 0; i < digitos.length(); i++) {
                 if (i == 2 || i == 4) formateado.append('/');
                 formateado.append(digitos.charAt(i));
             }
-            if (!formateado.toString().equals(s.toString())) {
+
+            // 4. Si el texto que se va a mostrar es diferente al que está en pantalla, lo actualizamos
+            if (!formateado.toString().equals(textoActual)) {
                 formateando = true;
-                s.replace(0, s.length(), formateado);
+                s.replace(0, s.length(), formateado.toString());
                 formateando = false;
             }
         }
     }
+
+    
 }
