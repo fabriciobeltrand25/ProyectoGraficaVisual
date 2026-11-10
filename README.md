@@ -25,9 +25,7 @@ Desarrollar una solución tecnológica móvil que automatice el registro de gast
 
 ---
 
-## ⚙️ Requisitos Técnicos y Versiones (Para el Ingeniero)
-
-Si el ingeniero o evaluador pregunta: *"¿Dónde veo la versión de la aplicación o qué necesito para probarla?"*, aquí está la respuesta técnica exacta:
+## ⚙️ Requisitos Técnicos y Versiones (Ingeniero)
 
 ### 1. Versiones declaradas en el proyecto (`build.gradle.kts`)
 * **Versión de la App:** `versionName = "1.0"` y `versionCode = 1`.
