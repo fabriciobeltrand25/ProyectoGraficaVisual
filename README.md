@@ -13,8 +13,13 @@
 
 El problema principal que resuelve es la pérdida de tiempo y la desorganización al tener que anotar manualmente los gastos de las facturas físicas. La aplicación utiliza **Inteligencia Artificial (Edge AI)** para escanear la factura con la cámara del celular, extraer automáticamente los datos clave (total, litros, fecha, nombre del comercio) y guardarlos en una base de datos local.
 
+
+
 ### 🎯 Objetivo General
 Desarrollar una solución tecnológica móvil que automatice el registro de gastos vehiculares mediante el Reconocimiento Óptico de Caracteres (OCR), permitiendo a los usuarios llevar un control financiero preciso de sus vehículos sin necesidad de conexión a internet, garantizando la privacidad de sus datos.
+
+**Implementación** 
+AutoScan Hn está desarrollada para dispositivos Android 13 en adelante (API 33 como versión mínima). Es compatible con versiones posteriores, incluyendo Android 14, 15 y 16. La aplicación utiliza Google ML Kit para reconocimiento OCR y escaneo de documentos, CameraX para procesamiento mediante cámara y SQLite para almacenamiento local.
 
 ### 🛠️ Tecnologías Utilizadas
 * **Lenguaje:** Java (Android Nativo)
