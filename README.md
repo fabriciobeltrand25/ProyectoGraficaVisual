@@ -42,7 +42,6 @@ AutoScan Hn está desarrollada para dispositivos Android 13 en adelante (API 33 
 * **Java (JDK):** Requiere **JDK 11** o superior. Android Studio Ladybug ya incluye el JDK 17, el cual es 100% compatible.
 
 ### 3. ¿Dónde se ve la versión de la App una vez instalada?
-Si el ingeniero quiere ver la versión directamente en el celular:
 * Ve a los **Ajustes (Settings)** del celular Android.
 * Entra a **Aplicaciones**.
 * Busca **AutoScanHn**.
@@ -84,6 +83,17 @@ El código está dividido de la siguiente manera:
   * **`values/`**: `colors.xml` (paleta de colores), `themes.xml` (modo claro/oscuro), `dimens.xml` (medidas).
 
 ---
+## 💻 Cómo clonar y ejecutar este proyecto
+
+Sigue estos pasos para descargar el código desde el repositorio y probarlo en tu computadora:
+
+### 1. Clonar el repositorio
+Abre tu terminal (Git Bash, CMD o la terminal integrada de Android Studio) y ejecuta el siguiente comando:
+
+```bash```
+https://github.com/fabriciobeltrand25/ProyectoGraficaVisual.git
+---
+
 
 ## 🛠️ Cómo compilar y ejecutar este proyecto
 
