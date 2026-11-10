@@ -32,6 +32,8 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+//Camara
+
 public class LivePreviewActivity extends AppCompatActivity {
 
     private static final int CAMERA_PERMISSION = 100;

@@ -23,7 +23,7 @@
         <activity
             android:name=".NuevoGasolinaActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" /> <!-- ESTO ES LA MAGIA -->
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".NuevoMantenimientoActivity" android:exported="false" />
         <activity android:name=".RegistrosActivity" android:exported="false" />
 

@@ -56,6 +56,8 @@ import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+// Motor
+
 public abstract class BaseReciboActivity extends AppCompatActivity {
 
     public static final String EXTRA_ID = "registro_id";
